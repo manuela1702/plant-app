@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="sr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Home - PlantApp</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+    <link rel="stylesheet" href="./css/global.css">
+</head>
+
+<body data-bs-theme="dark">
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-3">
+
+    <div class="container">
+
+        <a class="navbar-brand" href="index.html">
+            <i class="fa-solid fa-seedling"></i>
+            PlantApp
+        </a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <div class="collapse navbar-collapse"
+             id="navbarSupportedContent">
+
+            <ul class="navbar-nav me-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">
+                        <i class="fa-solid fa-house"></i>
+                        Home
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="my-plant.html">
+                        <i class="fa-solid fa-leaf"></i>
+                        My Plants
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <div id="plants"></div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="./js/utils.js"></script>
+
+
+<script>
+
+    retrieveData('/species', (plants) => {
+
+        const list = document.getElementById('plants');
+
+        let content = '';
+
+        for (let plant of plants) {
+
+            content += `
+
+                <div class="card plant-card">
+
+                    <img src=".${plant.imageUrl}"
+                         class="card-img-top"
+                         alt="${plant.name}">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            ${plant.name}
+                        </h5>
+
+                        <p class="card-text">
+                            <i>${plant.scientificName}</i>
+                        </p>
+
+                    </div>
+
+                    <div class="card-footer">
+
+                        <a href="#"
+                           class="text-decoration-none me-3"
+                           onclick="showSpecies(${plant.plantSpeciesId}); return false;">
+
+                            Prikaži više
+                            <i class="fa-solid fa-chevron-right fa-xs"></i>
+
+                        </a>
+
+                        <button class="btn btn-primary"
+                                onclick="addPlant(${plant.plantSpeciesId})">
+
+                            <i class="fa-solid fa-plus"></i>
+                            Add
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+
+        list.innerHTML = content;
+
+    });
+
+</script>
+
+</body>
+
+</html>

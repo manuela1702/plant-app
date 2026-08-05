@@ -1,14 +1,19 @@
 package rs.singidunum.plant.plantapp.entity;
 
-import jakarta.persistence.*;
+import java.time.LocalDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
-@Entity
-@Table(name = "my_plant")
+@Entity(name = "my_plant")
 @NoArgsConstructor
 @Getter
 @Setter
@@ -16,26 +21,15 @@ public class MyPlant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "my_plant_id")
-    private Integer id;
+    private Integer myPlantId;
 
     @Column(nullable = false)
     private String nickname;
 
-    @Column(name = "planting_date", nullable = false)
+    @Column(nullable = false)
     private LocalDate plantingDate;
 
-    @Column(name = "watering_interval", nullable = false)
-    private Integer wateringInterval;
-
-    @Column(name = "fertilizing_interval", nullable = false)
-    private Integer fertilizingInterval;
-
-    @Column(name = "repotting_interval", nullable = false)
-    private Integer repottingInterval;
-
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "plant_species_id", nullable = false)
     private PlantSpecies plantSpecies;
-
 }

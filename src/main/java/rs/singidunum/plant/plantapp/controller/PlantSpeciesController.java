@@ -1,5 +1,8 @@
 package rs.singidunum.plant.plantapp.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.singidunum.plant.plantapp.entity.PlantSpecies;
 import rs.singidunum.plant.plantapp.service.PlantSpeciesService;
@@ -7,37 +10,54 @@ import rs.singidunum.plant.plantapp.service.PlantSpeciesService;
 import java.util.List;
 
 @RestController
+@RequestMapping("/species")
+@CrossOrigin
+@RequiredArgsConstructor
 public class PlantSpeciesController {
 
     private final PlantSpeciesService service;
 
-    public PlantSpeciesController(PlantSpeciesService service) {
-        this.service = service;
-    }
-
-    @GetMapping("/species")
+    @GetMapping
     public List<PlantSpecies> getAllSpecies() {
         return service.getAllSpecies();
     }
-    @GetMapping("/species/{id}")
-    public PlantSpecies getSpeciesById(@PathVariable Integer id) {
-        return service.getSpeciesById(id);
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PlantSpecies> getSpeciesById(@PathVariable Integer id) {
+        return ResponseEntity.of(service.getSpeciesById(id));
     }
 
-    @PostMapping("/species")
-    public PlantSpecies create(@RequestBody PlantSpecies species) {
+    @PostMapping
+    public PlantSpecies createSpecies(@RequestBody PlantSpecies species) {
         return service.create(species);
     }
 
-    @PutMapping("/species/{id}")
+    @PutMapping("/{id}")
     public PlantSpecies update(@PathVariable Integer id,
                                @RequestBody PlantSpecies species) {
         return service.update(id, species);
     }
 
-    @DeleteMapping("/species/{id}")
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
         service.delete(id);
     }
 
+    @GetMapping("/watering/{watering}")
+    public List<PlantSpecies> getByWatering(
+            @PathVariable PlantSpecies.Watering watering) {
+        return service.getByWatering(watering);
+    }
+
+    @GetMapping("/sunlight/{sunlight}")
+    public List<PlantSpecies> getBySunlight(
+            @PathVariable PlantSpecies.Sunlight sunlight) {
+        return service.getBySunlight(sunlight);
+    }
+
+    @GetMapping("/search/{name}")
+    public List<PlantSpecies> searchByName(@PathVariable String name) {
+        return service.searchByName(name);
+    }
 }
