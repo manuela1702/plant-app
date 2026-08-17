@@ -1036,6 +1036,7 @@ async function editActivity(activityId,
 
         showMyPlant(plantId);
 
+
     } catch (e) {
 
         Swal.fire({
