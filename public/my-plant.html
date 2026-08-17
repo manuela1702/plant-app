@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="sr">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Plants - PlantApp</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+    <link rel="stylesheet" href="./css/global.css">
+
+</head>
+
+<body data-bs-theme="dark">
+
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-3">
+
+    <div class="container">
+
+        <a class="navbar-brand" href="./index.html">
+            <i class="fa-solid fa-seedling"></i>
+            PlantApp
+        </a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <div class="collapse navbar-collapse"
+             id="navbarSupportedContent">
+
+            <ul class="navbar-nav me-auto">
+
+                <li class="nav-item">
+
+                    <a class="nav-link" href="./index.html">
+
+                        <i class="fa-solid fa-house"></i>
+                        Home
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item">
+
+                    <a class="nav-link active"
+                       href="./my-plant.html">
+
+                        <i class="fa-solid fa-leaf"></i>
+                        My Plants
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <div class="row g-4">
+
+
+        <!-- SIDEBAR -->
+
+        <aside class="col-md-3">
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <h5 class="mb-0">
+                        <i class="fa-solid fa-seedling me-2"></i>
+                        Plant Species
+                    </h5>
+
+                </div>
+
+                <div id="species-menu"
+                     class="list-group list-group-flush">
+
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MY PLANTS -->
+
+        <main class="col-md-9">
+
+            <h2 id="species-title" class="mb-4"></h2>
+
+            <div id="my-plants"></div>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="./js/utils.js"></script>
+
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        loadSpeciesMenu();
+
+    });
+
+
+    async function loadSpeciesMenu() {
+
+        try {
+
+            const rsp = await fetch(API_URL + '/species');
+
+            if (!rsp.ok) {
+                throw new Error('Plant species could not be loaded.');
+            }
+
+            const species = await rsp.json();
+
+            const menu = document.getElementById('species-menu');
+
+            let content = '';
+
+            for (let plantSpecies of species) {
+
+                content += `
+
+                    <button type="button"
+                            class="list-group-item list-group-item-action"
+                            onclick="loadMyPlants(
+                                ${plantSpecies.plantSpeciesId},
+                                '${plantSpecies.name}',
+                                this
+                            )">
+
+                        ${plantSpecies.name}
+
+                    </button>
+
+                `;
+
+            }
+
+            menu.innerHTML = content;
+
+
+            if (species.length > 0) {
+
+                const firstButton =
+                    menu.querySelector('.list-group-item');
+
+                firstButton.classList.add('active');
+
+                loadMyPlants(
+                    species[0].plantSpeciesId,
+                    species[0].name,
+                    firstButton
+                );
+
+            }
+
+        } catch (e) {
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: e.message,
+                customClass: bootstrapClasses
+            });
+
+        }
+
+    }
+
+
+    async function loadMyPlants(speciesId, speciesName, selectedButton) {
+
+    try {
+
+        const buttons =
+            document.querySelectorAll('#species-menu .list-group-item');
+
+        buttons.forEach(button => {
+            button.classList.remove('active');
+        });
+
+        if (selectedButton) {
+            selectedButton.classList.add('active');
+        }
+
+
+        const rsp = await fetch(
+            API_URL + `/plants/species/${speciesId}`
+        );
+
+        if (!rsp.ok) {
+            throw new Error('Plants could not be loaded.');
+        }
+
+        const plants = await rsp.json();
+
+        const title =
+            document.getElementById('species-title');
+
+        const container =
+            document.getElementById('my-plants');
+
+
+        title.textContent = speciesName;
+
+
+        if (plants.length === 0) {
+
+            container.innerHTML = `
+                <div class="alert alert-secondary">
+                    You don't have any ${speciesName} plants yet.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        let content = '';
+
+
+        for (let plant of plants) {
+
+            const activitiesRsp = await fetch(
+                API_URL + `/activities/plant/${plant.myPlantId}`
+            );
+
+            const activities = activitiesRsp.ok
+                ? await activitiesRsp.json()
+                : [];
+
+
+            const lastWatering = getLastActivityDate(
+                activities,
+                'WATERING',
+                plant.plantingDate
+            );
+
+            const lastFertilizing = getLastActivityDate(
+                activities,
+                'FERTILIZING',
+                plant.plantingDate
+            );
+
+            const lastRepotting = getLastActivityDate(
+                activities,
+                'REPOTTING',
+                plant.plantingDate
+            );
+
+
+            const wateringStatus = getPlantStatus(
+                lastWatering,
+                plant.plantSpecies.wateringInterval
+            );
+
+            const fertilizingStatus = getPlantStatus(
+                lastFertilizing,
+                plant.plantSpecies.fertilizingInterval
+            );
+
+            const repottingStatus = getPlantStatus(
+                lastRepotting,
+                plant.plantSpecies.repottingInterval
+            );
+
+
+            const needsAttention =
+                wateringStatus.due ||
+                fertilizingStatus.due ||
+                repottingStatus.due;
+
+
+            content += `
+
+                <div class="card plant-card position-relative">
+
+                    ${
+                        needsAttention
+                            ? `
+                                <span class="position-absolute top-0 end-0 m-2
+                                             badge rounded-pill bg-danger"
+                                      title="Plant needs attention"
+                                      style="z-index: 2; font-size: 1rem;">
+
+                                    <i class="fa-solid fa-exclamation"></i>
+
+                                </span>
+                            `
+                            : ''
+                    }
+
+
+                    <img src=".${plant.plantSpecies.imageUrl}"
+                         class="card-img-top"
+                         alt="${plant.plantSpecies.name}">
+
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            ${plant.nickname}
+                        </h5>
+
+                        <p class="card-text">
+                            <i>
+                                ${plant.plantSpecies.scientificName}
+                            </i>
+                        </p>
+
+                    </div>
+
+
+                    <div class="card-footer">
+
+                        <div class="mb-3">
+
+                            <a href="#"
+                               class="text-decoration-none me-3"
+                               onclick="showMyPlant(${plant.myPlantId}); return false;">
+
+                                Prikaži više
+
+                                <i class="fa-solid fa-chevron-right fa-xs"></i>
+
+                            </a>
+
+                        </div>
+
+
+                        <button class="btn btn-success"
+                                onclick="editPlant(${plant.myPlantId})">
+
+                            <i class="fa-solid fa-pen"></i>
+                            Izmeni
+
+                        </button>
+
+
+                        <button class="btn btn-danger"
+                                onclick="deletePlant(${plant.myPlantId})">
+
+                            <i class="fa-solid fa-trash"></i>
+                            Obriši
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+
+
+        container.innerHTML = content;
+
+
+    } catch (e) {
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: e.message,
+            customClass: bootstrapClasses
+        });
+
+    }
+
+}
+   async function editPlant(id) {
+
+    try {
+
+        const rsp = await fetch(API_URL + `/plants/${id}`);
+
+        if (!rsp.ok) {
+            throw new Error('Plant could not be loaded.');
+        }
+
+        const plant = await rsp.json();
+
+
+        const result = await Swal.fire({
+
+            title: 'Edit Plant',
+
+            html: `
+                <div class="text-start">
+
+                    <label for="plant-nickname" class="form-label">
+                        Nickname
+                    </label>
+
+                    <input id="plant-nickname"
+                           type="text"
+                           class="form-control mb-3"
+                           value="${plant.nickname}">
+
+
+                    <label for="planting-date" class="form-label">
+                        Planting Date
+                    </label>
+
+                    <input id="planting-date"
+                           type="date"
+                           class="form-control"
+                           value="${plant.plantingDate}"
+                           max="${new Date().toISOString().split('T')[0]}">
+
+                </div>
+            `,
+
+            showCancelButton: true,
+
+            confirmButtonText: 'Save',
+            cancelButtonText: 'Cancel',
+
+            customClass: {
+                popup: 'card',
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-secondary'
+            },
+
+            buttonsStyling: false,
+            width: 600,
+            focusConfirm: false,
+
+            preConfirm: () => {
+
+                const nickname =
+                    document.getElementById('plant-nickname').value.trim();
+
+                const plantingDate =
+                    document.getElementById('planting-date').value;
+
+
+                if (!nickname || !plantingDate) {
+
+                    Swal.showValidationMessage(
+                        'Please fill in all fields.'
+                    );
+
+                    return false;
+                }
+
+
+                const today =
+                    new Date().toISOString().split('T')[0];
+
+                if (plantingDate > today) {
+
+                    Swal.showValidationMessage(
+                        'Planting date cannot be in the future.'
+                    );
+
+                    return false;
+                }
+
+
+                return {
+                    nickname: nickname,
+                    plantingDate: plantingDate,
+
+                    plantSpecies: {
+                        plantSpeciesId:
+                            plant.plantSpecies.plantSpeciesId
+                    }
+                };
+
+            }
+
+        });
+
+
+        if (!result.isConfirmed) {
+            return;
+        }
+
+
+        const updateRsp = await fetch(
+            API_URL + `/plants/${id}`,
+            {
+                method: 'PUT',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify(result.value)
+            }
+        );
+
+
+        if (!updateRsp.ok) {
+            throw new Error('Plant could not be updated.');
+        }
+
+
+        await Swal.fire({
+            icon: 'success',
+            title: 'Plant updated',
+            confirmButtonText: 'OK',
+
+            customClass: {
+                popup: 'card',
+                confirmButton: 'btn btn-success'
+            },
+
+            buttonsStyling: false
+        });
+
+
+        loadMyPlants(
+            plant.plantSpecies.plantSpeciesId,
+            plant.plantSpecies.name
+        );
+
+
+    } catch (e) {
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: e.message,
+            customClass: bootstrapClasses
+        });
+
+    }
+
+}
+
+async function deletePlant(id) {
+
+    try {
+
+        const rsp = await fetch(API_URL + `/plants/${id}`);
+
+        if (!rsp.ok) {
+            throw new Error('Plant could not be loaded.');
+        }
+
+        const plant = await rsp.json();
+
+
+        const result = await Swal.fire({
+            title: 'Delete plant?',
+            text: `Are you sure you want to delete "${plant.nickname}"?`,
+            icon: 'warning',
+
+            showCancelButton: true,
+
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel',
+
+            customClass: {
+                popup: 'card',
+                confirmButton: 'btn btn-danger',
+                cancelButton: 'btn btn-secondary'
+            },
+
+            buttonsStyling: false
+        });
+
+
+        if (!result.isConfirmed) {
+            return;
+        }
+
+
+        const deleteRsp = await fetch(
+            API_URL + `/plants/${id}`,
+            {
+                method: 'DELETE'
+            }
+        );
+
+
+        if (!deleteRsp.ok) {
+            throw new Error('Plant could not be deleted.');
+        }
+
+
+        await Swal.fire({
+            icon: 'success',
+            title: 'Plant deleted',
+            confirmButtonText: 'OK',
+
+            customClass: {
+                popup: 'card',
+                confirmButton: 'btn btn-success'
+            },
+
+            buttonsStyling: false
+        });
+
+
+        loadMyPlants(
+            plant.plantSpecies.plantSpeciesId,
+            plant.plantSpecies.name
+        );
+
+
+    } catch (e) {
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: e.message,
+            customClass: bootstrapClasses
+        });
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>

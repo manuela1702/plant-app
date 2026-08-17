@@ -1,0 +1,42 @@
+#plants {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+.plant-card {
+    width: 18rem;
+}
+
+.plant-card img {
+    height: 250px;
+    object-fit: cover;
+}
+
+
+/* MY PLANTS */
+
+#species-menu {
+    display: flex;
+    flex-direction: column;
+}
+
+#my-plants {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.my-plant-card img {
+    height: 250px;
+    object-fit: cover;
+}
+
+.species-item {
+    cursor: pointer;
+}
+
+.species-item:hover {
+    background: #3b3b3b;
+}
