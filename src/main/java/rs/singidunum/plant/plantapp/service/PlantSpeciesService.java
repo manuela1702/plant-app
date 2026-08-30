@@ -12,7 +12,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PlantSpeciesService {
 
-    private final PlantSpeciesRepository repository;
+    private final PlantSpeciesRepository repository;//reference to the repository object,DI
 
     public List<PlantSpecies> getAllSpecies() {
         return repository.findAll();

@@ -15,7 +15,7 @@ import java.util.Optional;
 public class MyPlantService {
 
     private final MyPlantRepository repository;
-    private final PlantActivityRepository plantActivityRepository;
+    private final PlantActivityRepository plantActivityRepository;//for deleting a plant activity
 
     public List<MyPlant> getAllPlants() {
         return repository.findAll();
@@ -45,7 +45,7 @@ public class MyPlantService {
         return repository.save(existing);
     }
 
-    @Transactional
+    @Transactional//database integrity
     public void delete(Integer id) {
         plantActivityRepository.deleteAllByMyPlantMyPlantId(id);
         repository.deleteById(id);

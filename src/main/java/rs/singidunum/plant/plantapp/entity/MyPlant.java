@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity(name = "my_plant")
-@NoArgsConstructor
+@NoArgsConstructor//lombok
 @Getter
 @Setter
 public class MyPlant {
@@ -31,5 +31,5 @@ public class MyPlant {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "plant_species_id", nullable = false)
-    private PlantSpecies plantSpecies;
+    private PlantSpecies plantSpecies;//object for accessing all data
 }

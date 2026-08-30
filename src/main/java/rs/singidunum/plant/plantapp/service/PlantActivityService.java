@@ -27,7 +27,7 @@ public class PlantActivityService {
 
         plantActivity.setActivityDate(activity.getActivityDate());
         plantActivity.setActivityType(activity.getActivityType());
-        plantActivity.setMyPlant(activity.getMyPlant());
+        plantActivity.setMyPlant(activity.getMyPlant());// Sets the plant that the activity belongs to
 
         return repository.save(plantActivity);
     }

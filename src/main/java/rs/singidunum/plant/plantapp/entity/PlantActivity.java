@@ -38,8 +38,8 @@ public class PlantActivity {
     @Column(nullable = false)
     private ActivityType activityType;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "my_plant_id", nullable = false)
+    @ManyToOne(optional = false)//N:1
+    @JoinColumn(name = "my_plant_id", nullable = false)//foreign key
     private MyPlant myPlant;
 
 }

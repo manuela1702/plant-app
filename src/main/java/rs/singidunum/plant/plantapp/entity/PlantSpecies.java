@@ -11,8 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "plant_species")
-@NoArgsConstructor
+@Entity(name = "plant_species")//maps the java class to a table
+@NoArgsConstructor//lombok
 @Getter
 @Setter
 public class PlantSpecies {
@@ -36,7 +36,7 @@ public class PlantSpecies {
         HIGH
     }
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)//enum string
     @Column(nullable = false)
     private Sunlight sunlight;
 

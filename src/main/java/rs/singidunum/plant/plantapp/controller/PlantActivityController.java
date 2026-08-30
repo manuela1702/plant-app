@@ -54,7 +54,7 @@ public class PlantActivityController {
             @PathVariable Integer id,
             @PathVariable PlantActivity.ActivityType activityType) {
 
-        return ResponseEntity.of(
+        return ResponseEntity.of(//returns the entire http response,body and status
                 service.getLastActivity(id, activityType)
         );
     }

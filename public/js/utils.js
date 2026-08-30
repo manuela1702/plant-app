@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080';
+const API_URL = 'http://localhost:8080';//elementary URL of the backend server
 
 const bootstrapClasses = {
     popup: 'card',
@@ -21,14 +21,14 @@ function showLoading() {
 }
 
 
-function showConfirm(msg, callback) {
+function showConfirm(msg, callback) {// msg=text,callback function that executes after confirmation
 
     Swal.fire({
         title: msg,
         icon: 'question',
         showCancelButton: true,
-        confirmButtonText: 'Da',
-        cancelButtonText: 'Ne',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
         customClass: bootstrapClasses
     }).then(result => {
 
@@ -59,7 +59,7 @@ async function retrieveData(url, callback) {
         );
 
         if (container) {
-            container.hidden = true;
+            container.hidden = true;//temporarily hides the page content until everything is loaded
         }
 
         showLoading();
@@ -70,8 +70,8 @@ async function retrieveData(url, callback) {
 
             Swal.fire({
                 icon: 'error',
-                title: 'Podatak nije pronađen',
-                text: 'Traženi podatak ne postoji.',
+                title: 'Data not found',
+                text: 'Data does not exist',
                 customClass: bootstrapClasses
             });
 
@@ -110,7 +110,7 @@ async function showSpecies(id) {
         const rsp = await fetch(API_URL + `/species/${id}`);
 
         if (!rsp.ok) {
-            throw new Error('Vrsta biljke nije pronađena.');
+            throw new Error('Plant species not found.');
         }
 
         const plant = await rsp.json();
@@ -243,7 +243,7 @@ async function addPlant(speciesId) {
 
         focusConfirm: false,
 
-        preConfirm: () => {
+        preConfirm: () => {//checks the input before the popup closes
 
             const nickname =
                 document.getElementById('plant-nickname').value.trim();
@@ -261,7 +261,7 @@ async function addPlant(speciesId) {
                     'Please fill in all fields.'
                 );
 
-                return false;
+                return false;//doesn't close the popup, allowing the user to correct the input
             }
 
 
@@ -279,7 +279,7 @@ async function addPlant(speciesId) {
                 nickname: nickname,
                 plantingDate: plantingDate,
 
-                plantSpecies: {
+                plantSpecies: {//creates a js object
                     plantSpeciesId: speciesId
                 }
             };
@@ -303,7 +303,7 @@ async function addPlant(speciesId) {
                 'Content-Type': 'application/json'
             },
 
-            body: JSON.stringify(result.value)
+            body: JSON.stringify(result.value)//js=json
 
         });
 
@@ -353,9 +353,9 @@ async function addPlant(speciesId) {
 function getLastActivityDate(activities, type, plantingDate) {
 
     const filtered = activities
-        .filter(activity => activity.activityType === type)
+        .filter(activity => activity.activityType === type)//returns only the elements that match the requested type
         .sort((a, b) =>
-            new Date(b.activityDate) - new Date(a.activityDate)
+            new Date(b.activityDate) - new Date(a.activityDate)//newest date first
         );
 
     if (filtered.length > 0) {
@@ -366,7 +366,7 @@ function getLastActivityDate(activities, type, plantingDate) {
 }
 
 
-function getPlantStatus(lastDate, interval) {
+function getPlantStatus(lastDate, interval) {//plant attention
 
     const start = new Date(lastDate + 'T00:00:00');
 
@@ -378,7 +378,7 @@ function getPlantStatus(lastDate, interval) {
 
     const millisecondsPerDay = 1000 * 60 * 60 * 24;
 
-    const daysLeft = Math.ceil(
+    const daysLeft = Math.ceil(//calculates how many days are left until the next activity
         (dueDate - today) / millisecondsPerDay
     );
 
@@ -421,7 +421,7 @@ function getPlantStatus(lastDate, interval) {
 }
 
 
-function getStatusBadge(status) {
+function getStatusBadge(status) {// Generate status badge
 
     let textClass = '';
 
@@ -764,13 +764,8 @@ async function addActivity(plantId, activityType) {
 
     try {
 
-        const today = new Date();
-
         const activityDate =
-            today.getFullYear() + '-' +
-            String(today.getMonth() + 1).padStart(2, '0') + '-' +
-            String(today.getDate()).padStart(2, '0');
-
+            new Date().toISOString().split('T')[0];//YYYY-MM-DD
 
         const rsp = await fetch(
             API_URL + '/activities',

@@ -9,8 +9,8 @@ import rs.singidunum.plant.plantapp.service.PlantSpeciesService;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/species")
+@RestController//rest controller, receives http requests and returns json responses
+@RequestMapping("/species")//base path for all methods
 @CrossOrigin
 @RequiredArgsConstructor
 public class PlantSpeciesController {
@@ -46,7 +46,7 @@ public class PlantSpeciesController {
 
     @GetMapping("/watering/{watering}")
     public List<PlantSpecies> getByWatering(
-            @PathVariable PlantSpecies.Watering watering) {
+            @PathVariable PlantSpecies.Watering watering) {//reads the parameter from the URL
         return service.getByWatering(watering);
     }
 

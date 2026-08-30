@@ -8,8 +8,8 @@ import java.util.List;
 
 
 @Repository
-public interface PlantSpeciesRepository
-        extends JpaRepository<PlantSpecies, Integer> {
+public interface PlantSpeciesRepository//defines methods for accessing the table
+        extends JpaRepository<PlantSpecies, Integer> {//extends JPA and CRUD, repository that works with the entity
 
     List<PlantSpecies> findAllByWatering(PlantSpecies.Watering watering);
 

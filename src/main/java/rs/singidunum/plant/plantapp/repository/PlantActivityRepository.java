@@ -14,7 +14,7 @@ public interface PlantActivityRepository
     List<PlantActivity> findAllByMyPlantMyPlantId(Integer id);
 
     Optional<PlantActivity>
-    findFirstByMyPlantMyPlantIdAndActivityTypeOrderByActivityDateDesc(
+    findFirstByMyPlantMyPlantIdAndActivityTypeOrderByActivityDateDesc(//the last activity of that type for that plant
             Integer id,
             PlantActivity.ActivityType activityType
     );

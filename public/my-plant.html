@@ -81,8 +81,6 @@
     <div class="row g-4">
 
 
-        <!-- SIDEBAR -->
-
         <aside class="col-md-3">
 
             <div class="card">
@@ -104,9 +102,6 @@
             </div>
 
         </aside>
-
-
-        <!-- MY PLANTS -->
 
         <main class="col-md-9">
 
@@ -142,12 +137,13 @@
         try {
 
             const rsp = await fetch(API_URL + '/species');
+            //sends a get request to the backend and waits for the http response
 
             if (!rsp.ok) {
                 throw new Error('Plant species could not be loaded.');
             }
 
-            const species = await rsp.json();
+            const species = await rsp.json();//json=js objects
 
             const menu = document.getElementById('species-menu');
 
@@ -206,6 +202,7 @@
 
 
     async function loadMyPlants(speciesId, speciesName, selectedButton) {
+    //loads plants of the selected species
 
     try {
 
@@ -213,11 +210,11 @@
             document.querySelectorAll('#species-menu .list-group-item');
 
         buttons.forEach(button => {
-            button.classList.remove('active');
+            button.classList.remove('active');//removes the active class from all buttons
         });
 
         if (selectedButton) {
-            selectedButton.classList.add('active');
+            selectedButton.classList.add('active');//only one button is active at a time
         }
 
 
@@ -229,13 +226,13 @@
             throw new Error('Plants could not be loaded.');
         }
 
-        const plants = await rsp.json();
+        const plants = await rsp.json();//json=js obj
 
         const title =
             document.getElementById('species-title');
 
         const container =
-            document.getElementById('my-plants');
+            document.getElementById('my-plants');//container for plants
 
 
         title.textContent = speciesName;
@@ -256,7 +253,7 @@
         let content = '';
 
 
-        for (let plant of plants) {
+        for (let plant of plants) {//all activity plants
 
             const activitiesRsp = await fetch(
                 API_URL + `/activities/plant/${plant.myPlantId}`
@@ -270,7 +267,7 @@
             const lastWatering = getLastActivityDate(
                 activities,
                 'WATERING',
-                plant.plantingDate
+                plant.plantingDate//gets the planting date
             );
 
             const lastFertilizing = getLastActivityDate(
@@ -324,7 +321,7 @@
 
                                 </span>
                             `
-                            : ''
+                            : '' //displays a warning if the plant needs attention
                     }
 
 
@@ -356,7 +353,7 @@
                                class="text-decoration-none me-3"
                                onclick="showMyPlant(${plant.myPlantId}); return false;">
 
-                                Prikaži više
+                                Show more
 
                                 <i class="fa-solid fa-chevron-right fa-xs"></i>
 
@@ -369,7 +366,7 @@
                                 onclick="editPlant(${plant.myPlantId})">
 
                             <i class="fa-solid fa-pen"></i>
-                            Izmeni
+                            Edit
 
                         </button>
 
@@ -378,7 +375,7 @@
                                 onclick="deletePlant(${plant.myPlantId})">
 
                             <i class="fa-solid fa-trash"></i>
-                            Obriši
+                            Delete
 
                         </button>
 
