@@ -20,3 +20,9 @@ Technologies Used
 - SweetAlert2
 - Font Awesome
 - GitHub
+
+How to run the project.
+
+1. Create/import the MySQL database using db.sql.
+2. Run PlantAppApplication.
+3. Open public/index.html in the browser.

@@ -54,7 +54,7 @@ async function retrieveData(url, callback) {
 
     try {
 
-        const container = document.querySelector(
+        const container = document.querySelector(// Stores a reference to the HTML element
             ".container, .container-fluid"
         );
 
@@ -79,7 +79,7 @@ async function retrieveData(url, callback) {
 
         }
 
-        const data = await rsp.json();
+        const data = await rsp.json();//json=jso
 
         callback(data);
 
@@ -368,7 +368,7 @@ function getLastActivityDate(activities, type, plantingDate) {
 
 function getPlantStatus(lastDate, interval) {//plant attention
 
-    const start = new Date(lastDate + 'T00:00:00');
+    const start = new Date(lastDate + 'T00:00:00');//date object
 
     const dueDate = new Date(start);
     dueDate.setDate(dueDate.getDate() + interval);

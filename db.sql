@@ -20,6 +20,7 @@ CREATE DATABASE IF NOT EXISTS `plant` /*!40100 DEFAULT CHARACTER SET utf8mb4 COL
 USE `plant`;
 
 -- Dumping structure for table plant.my_plant
+DROP TABLE IF EXISTS `my_plant`;
 CREATE TABLE IF NOT EXISTS `my_plant` (
   `my_plant_id` int unsigned NOT NULL AUTO_INCREMENT,
   `nickname` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
@@ -28,15 +29,26 @@ CREATE TABLE IF NOT EXISTS `my_plant` (
   PRIMARY KEY (`my_plant_id`),
   KEY `fk_my_plant_plant_species_id` (`plant_species_id`),
   CONSTRAINT `fk_my_plant_plant_species_id` FOREIGN KEY (`plant_species_id`) REFERENCES `plant_species` (`plant_species_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
--- Dumping data for table plant.my_plant: ~2 rows (approximately)
+-- Dumping data for table plant.my_plant: ~13 rows (approximately)
 INSERT INTO `my_plant` (`my_plant_id`, `nickname`, `planting_date`, `plant_species_id`) VALUES
-	(1, 'My Monstera', '2026-06-23', 2),
-	(20, 'test 22', '2026-08-17', 1),
-	(21, 'test', '2026-08-17', 8);
+	(30, 'Mona', '2026-05-10', 2),
+	(31, 'Monstera 1', '2026-08-15', 2),
+	(32, 'Plant by the window', '2026-03-20', 1),
+	(33, 'Vera', '2026-04-30', 4),
+	(34, 'Sunny', '2026-06-01', 4),
+	(35, 'test', '2026-08-29', 8),
+	(36, 'Luna', '2026-07-18', 1),
+	(37, 'Charlie', '2026-08-29', 3),
+	(38, 'Ruby', '2026-08-29', 5),
+	(39, 'Aurora', '2026-08-25', 8),
+	(40, 'Bella', '2026-01-11', 9),
+	(41, 'Velvet', '2026-08-03', 6),
+	(42, 'Lily', '2026-08-26', 7);
 
 -- Dumping structure for table plant.plant_activity
+DROP TABLE IF EXISTS `plant_activity`;
 CREATE TABLE IF NOT EXISTS `plant_activity` (
   `plant_activity_id` int unsigned NOT NULL AUTO_INCREMENT,
   `activity_date` date NOT NULL,
@@ -45,19 +57,25 @@ CREATE TABLE IF NOT EXISTS `plant_activity` (
   PRIMARY KEY (`plant_activity_id`),
   KEY `fk_plant_activity_my_plant_id` (`my_plant_id`),
   CONSTRAINT `fk_plant_activity_my_plant_id` FOREIGN KEY (`my_plant_id`) REFERENCES `my_plant` (`my_plant_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
--- Dumping data for table plant.plant_activity: ~1 rows (approximately)
+-- Dumping data for table plant.plant_activity: ~12 rows (approximately)
 INSERT INTO `plant_activity` (`plant_activity_id`, `activity_date`, `activity_type`, `my_plant_id`) VALUES
-	(13, '2026-08-05', 'WATERING', 1),
-	(15, '2026-07-27', 'REPOTTING', 1),
-	(16, '2026-08-17', 'REPOTTING', 1),
-	(18, '2026-07-26', 'FERTILIZING', 20),
-	(20, '2026-08-17', 'REPOTTING', 20),
-	(22, '2026-08-04', 'WATERING', 21),
-	(23, '2026-08-17', 'WATERING', 21);
+	(45, '2026-08-25', 'WATERING', 30),
+	(46, '2026-08-01', 'FERTILIZING', 30),
+	(47, '2026-05-10', 'REPOTTING', 30),
+	(48, '2026-08-05', 'WATERING', 32),
+	(49, '2026-06-15', 'FERTILIZING', 32),
+	(50, '2026-03-20', 'REPOTTING', 32),
+	(51, '2026-08-27', 'WATERING', 36),
+	(52, '2026-08-29', 'WATERING', 33),
+	(53, '2026-08-10', 'FERTILIZING', 33),
+	(54, '2026-08-18', 'WATERING', 34),
+	(55, '2026-08-18', 'FERTILIZING', 34),
+	(56, '2026-08-18', 'REPOTTING', 34);
 
 -- Dumping structure for table plant.plant_species
+DROP TABLE IF EXISTS `plant_species`;
 CREATE TABLE IF NOT EXISTS `plant_species` (
   `plant_species_id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
